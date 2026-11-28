@@ -82,10 +82,10 @@ import com.erodriguez.sistema_tickets_si_cobra.ui.theme.VerdeExito
 
 @Composable
 fun LoginScreen(
-    onIngresar: () -> Unit,
+    onIngresar: (String) -> Unit,
     onOlvidePassword: () -> Unit
 ) {
-    var rolSeleccionado by remember { mutableStateOf("Técnico") }
+    var rolSeleccionado by remember { mutableStateOf("Jefe de TI") }
     var correo by remember { mutableStateOf("e.rodriguez@sicobra.com") }
     var password by remember { mutableStateOf("Sicobra2026") }
     var mostrarPassword by remember { mutableStateOf(false) }
@@ -418,7 +418,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Button(
-                    onClick = onIngresar,
+                    onClick = { onIngresar(rolSeleccionado) },
                     enabled = formularioValido,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AzulPrincipal,
@@ -445,7 +445,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Button(
-                    onClick = onIngresar,
+                    onClick = { onIngresar(rolSeleccionado) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AzulSuave,
                         contentColor = AzulPrincipal

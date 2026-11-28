@@ -9,7 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.erodriguez.sistema_tickets_si_cobra.presentation.screens.asignacion.AsignacionTicketsScreen
 import com.erodriguez.sistema_tickets_si_cobra.presentation.screens.avisos.AvisosScreen
+import com.erodriguez.sistema_tickets_si_cobra.presentation.screens.dashboard.DashboardScreen
+import com.erodriguez.sistema_tickets_si_cobra.presentation.screens.detalle.ComentariosTicketScreen
+import com.erodriguez.sistema_tickets_si_cobra.presentation.screens.detalle.DetalleTicketScreen
 import com.erodriguez.sistema_tickets_si_cobra.presentation.screens.login.LoginScreen
 import com.erodriguez.sistema_tickets_si_cobra.presentation.screens.nuevo_ticket.NuevoTicketPaso1Screen
 import com.erodriguez.sistema_tickets_si_cobra.presentation.screens.nuevo_ticket.NuevoTicketPaso2Screen
@@ -18,7 +22,11 @@ import com.erodriguez.sistema_tickets_si_cobra.presentation.screens.recuperar.Re
 import com.erodriguez.sistema_tickets_si_cobra.presentation.screens.tickets.MisTicketsScreen
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
+fun AppNavigation(
+    navController: NavHostController,
+    rolUsuario: String,
+    onRolSeleccionado: (String) -> Unit
+) {
     var areaTicket by remember { mutableStateOf("Campaña y Telefonía") }
     var categoriaTicket by remember { mutableStateOf("Marcador Predictivo") }
     var prioridadTicket by remember { mutableStateOf("Alta") }
@@ -31,8 +39,10 @@ fun AppNavigation(navController: NavHostController) {
     ) {
         composable(RutasNav.LOGIN) {
             LoginScreen(
-                onIngresar = {
-                    navController.navigate(RutasNav.MIS_TICKETS) {
+                onIngresar = { rol ->
+                    onRolSeleccionado(rol)
+                    val destino = if (rol == "Jefe de TI") RutasNav.DASHBOARD else RutasNav.MIS_TICKETS
+                    navController.navigate(destino) {
                         popUpTo(RutasNav.LOGIN) { inclusive = true }
                     }
                 },
@@ -52,6 +62,32 @@ fun AppNavigation(navController: NavHostController) {
 
         composable(RutasNav.MIS_TICKETS) {
             MisTicketsScreen(
+                rolUsuario = rolUsuario,
+                onAbrirAvisos = {
+                    navController.navigate(RutasNav.AVISOS) {
+                        launchSingleTop = true
+                    }
+                },
+                onAbrirPerfil = {
+                    navController.navigate(RutasNav.PERFIL) {
+                        launchSingleTop = true
+                    }
+                },
+                onTicketClick = { codigo ->
+                    navController.navigate(RutasNav.detalleTicket(codigo))
+                },
+                onAbrirPorAsignar = {
+                    navController.navigate(RutasNav.POR_ASIGNAR)
+                }
+            )
+        }
+
+        composable(RutasNav.DASHBOARD) {
+            DashboardScreen(
+                onExportarPdf = {},
+                onAbrirPorAsignar = {
+                    navController.navigate(RutasNav.POR_ASIGNAR)
+                },
                 onAbrirAvisos = {
                     navController.navigate(RutasNav.AVISOS) {
                         launchSingleTop = true
@@ -111,6 +147,44 @@ fun AppNavigation(navController: NavHostController) {
                 },
                 onEnviarTicket = {
                     navController.popBackStack(RutasNav.MIS_TICKETS, false)
+                }
+            )
+        }
+
+        composable(RutasNav.DETALLE_TICKET) { backStackEntry ->
+            val codigo = backStackEntry.arguments?.getString("codigo") ?: "TKT-1024"
+            DetalleTicketScreen(
+                codigo = codigo,
+                rolUsuario = rolUsuario,
+                onVolver = {
+                    navController.popBackStack()
+                },
+                onAbrirComentarios = { cod ->
+                    navController.navigate(RutasNav.comentariosTicket(cod))
+                },
+                onAbrirPorAsignar = {
+                    navController.navigate(RutasNav.POR_ASIGNAR)
+                }
+            )
+        }
+
+        composable(RutasNav.COMENTARIOS_TICKET) { backStackEntry ->
+            val codigo = backStackEntry.arguments?.getString("codigo") ?: "TKT-1024"
+            ComentariosTicketScreen(
+                codigo = codigo,
+                onVolver = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(RutasNav.POR_ASIGNAR) {
+            AsignacionTicketsScreen(
+                onVolver = {
+                    navController.popBackStack()
+                },
+                onVerDetalle = { codigo ->
+                    navController.navigate(RutasNav.detalleTicket(codigo))
                 }
             )
         }

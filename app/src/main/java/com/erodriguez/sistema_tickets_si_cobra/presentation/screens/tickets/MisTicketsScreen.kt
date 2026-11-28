@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -65,8 +66,11 @@ import com.erodriguez.sistema_tickets_si_cobra.ui.theme.VerdeExito
 
 @Composable
 fun MisTicketsScreen(
+    rolUsuario: String,
     onAbrirAvisos: () -> Unit,
-    onAbrirPerfil: () -> Unit
+    onAbrirPerfil: () -> Unit,
+    onTicketClick: (String) -> Unit,
+    onAbrirPorAsignar: () -> Unit
 ) {
     var busqueda by remember { mutableStateOf("") }
     var filtroSeleccionado by remember { mutableStateOf("Todos") }
@@ -241,12 +245,40 @@ fun MisTicketsScreen(
                     }
                 }
 
-                Text(
-                    text = "SLA VIVO",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = AzulPrincipal
-                )
+                if (rolUsuario == "Jefe de TI") {
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = AzulSuave,
+                        border = BorderStroke(1.dp, Color(0xFFC4D7FA)),
+                        modifier = Modifier.clickable { onAbrirPorAsignar() }
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 9.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.Assignment,
+                                contentDescription = "Por asignar",
+                                tint = AzulPrincipal,
+                                modifier = Modifier.size(13.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Por asignar",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = AzulPrincipal
+                            )
+                        }
+                    }
+                } else {
+                    Text(
+                        text = "SLA VIVO",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AzulPrincipal
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -351,7 +383,10 @@ fun MisTicketsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(ticketsFiltrados) { ticket ->
-                TicketItem(ticket = ticket)
+                TicketItem(
+                    ticket = ticket,
+                    onClick = { onTicketClick(ticket.codigo) }
+                )
             }
         }
     }

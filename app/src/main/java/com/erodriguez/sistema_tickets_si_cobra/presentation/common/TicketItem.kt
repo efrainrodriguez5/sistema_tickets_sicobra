@@ -2,6 +2,7 @@ package com.erodriguez.sistema_tickets_si_cobra.presentation.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -72,7 +73,10 @@ data class TicketVisual(
 )
 
 @Composable
-fun TicketItem(ticket: TicketVisual) {
+fun TicketItem(
+    ticket: TicketVisual,
+    onClick: () -> Unit = {}
+) {
     val colorFondoPrioridad = when (ticket.prioridad) {
         "Alta" -> RojoFondo
         "Media" -> Color(0xFFD6E9FB)
@@ -106,7 +110,9 @@ fun TicketItem(ticket: TicketVisual) {
     val colorFondoPie = if (ticket.esVencido) RojoSuave else Color(0xFFF4F6FB)
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(1.dp, BordeSuave),

@@ -28,8 +28,25 @@ import com.erodriguez.sistema_tickets_si_cobra.ui.theme.RojoAlerta
 import com.erodriguez.sistema_tickets_si_cobra.ui.theme.TextoSecundario
 
 @Composable
-fun AppBottomBar(navController: NavHostController) {
-    val opciones = listOf(BottomNavItem.Tickets, BottomNavItem.Avisos, BottomNavItem.Perfil)
+fun AppBottomBar(
+    navController: NavHostController,
+    rolUsuario: String
+) {
+    val opciones = if (rolUsuario == "Jefe de TI") {
+        listOf(
+            BottomNavItem.Tickets,
+            BottomNavItem.Dashboard,
+            BottomNavItem.Avisos,
+            BottomNavItem.Perfil
+        )
+    } else {
+        listOf(
+            BottomNavItem.Tickets,
+            BottomNavItem.Avisos,
+            BottomNavItem.Perfil
+        )
+    }
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 

@@ -22,10 +22,19 @@ import com.erodriguez.sistema_tickets_si_cobra.ui.theme.AzulPrincipal
 import com.erodriguez.sistema_tickets_si_cobra.ui.theme.FondoPantalla
 
 @Composable
-fun AppScaffold(navController: NavHostController, content: @Composable (PaddingValues) -> Unit) {
+fun AppScaffold(
+    navController: NavHostController,
+    rolUsuario: String,
+    content: @Composable (PaddingValues) -> Unit
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val ruta = navBackStackEntry?.destination?.route
-    val rutasConBarraInferior = listOf(RutasNav.MIS_TICKETS, RutasNav.AVISOS, RutasNav.PERFIL)
+    val rutasConBarraInferior = listOf(
+        RutasNav.MIS_TICKETS,
+        RutasNav.DASHBOARD,
+        RutasNav.AVISOS,
+        RutasNav.PERFIL
+    )
     val mostrarBarraInferior = ruta in rutasConBarraInferior
     val mostrarBotonNuevo = ruta == RutasNav.MIS_TICKETS
 
@@ -34,7 +43,10 @@ fun AppScaffold(navController: NavHostController, content: @Composable (PaddingV
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             if (mostrarBarraInferior) {
-                AppBottomBar(navController)
+                AppBottomBar(
+                    navController = navController,
+                    rolUsuario = rolUsuario
+                )
             }
         },
         floatingActionButton = {

@@ -7,6 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.erodriguez.sistema_tickets_si_cobra.presentation.common.AppScaffold
@@ -20,13 +24,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             Sistema_tickets_si_cobraTheme {
                 val navController = rememberNavController()
-                AppScaffold(navController) { paddingValues ->
+                var rolUsuario by remember { mutableStateOf("Jefe de TI") }
+                AppScaffold(
+                    navController = navController,
+                    rolUsuario = rolUsuario
+                ) { paddingValues ->
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        AppNavigation(navController)
+                        AppNavigation(
+                            navController = navController,
+                            rolUsuario = rolUsuario,
+                            onRolSeleccionado = { rolUsuario = it }
+                        )
                     }
                 }
             }

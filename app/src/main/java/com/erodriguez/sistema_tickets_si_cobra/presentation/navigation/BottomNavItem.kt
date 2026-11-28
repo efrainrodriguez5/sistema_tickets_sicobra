@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material.icons.outlined.ConfirmationNumber
+import androidx.compose.material.icons.outlined.QueryStats
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomNavItem(
@@ -13,6 +14,7 @@ sealed class BottomNavItem(
     val cantidadAvisos: Int = 0
 ) {
     object Tickets : BottomNavItem(RutasNav.MIS_TICKETS, "Tickets", Icons.Outlined.ConfirmationNumber)
+    object Dashboard : BottomNavItem(RutasNav.DASHBOARD, "Dashboard", Icons.Outlined.QueryStats)
     object Avisos : BottomNavItem(RutasNav.AVISOS, "Avisos", Icons.Outlined.Campaign, 3)
     object Perfil : BottomNavItem(RutasNav.PERFIL, "Perfil", Icons.Outlined.AccountCircle)
 }
